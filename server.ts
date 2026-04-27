@@ -71,6 +71,7 @@ app.get("/", (req, res) => {
             <section class="bg-red-500/5 rounded-[32px] p-8 border border-red-500/20">
                 <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-300 mb-4">Troubleshooting</h3>
                 <ul class="text-xs space-y-2 text-red-200/80 list-disc pl-4">
+                    <li><b>AndroidX Error:</b> Enabled 'android.useAndroidX=true' in 'gradle.properties' to support modern libraries.</li>
                     <li><b>Repo Conflict:</b> Centralized repositories in settings.gradle to fix 'RepositoriesMode.FAIL_ON_PROJECT_REPOS' error.</li>
                     <li><b>Missing Wrapper:</b> The CI now generates 'gradlew' automatically via 'gradle wrapper'.</li>
                     <li><b>Resource Errors:</b> Verified 'colors.xml' and Launcher Icons exist in /res.</li>
