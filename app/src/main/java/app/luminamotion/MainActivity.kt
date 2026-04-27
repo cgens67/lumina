@@ -28,10 +28,10 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.automirrored.filled.*
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.zIndex
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.zIndex
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -274,6 +274,52 @@ fun PropertyDropdown(label: String, value: String) {
 }
 
 @Composable
+fun PreviewArea(activeEffects: Set<String> = emptySet()) {
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    
+    val blurAmount = if (activeEffects.contains("Gaussian Blur")) 10.dp else 0.dp
+    val motionBlur = activeEffects.contains("Motion Blur")
+    val oscillate = activeEffects.contains("Oscillate")
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Black)
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    offset += dragAmount
+                }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        // Mock canvas object
+        Column(
+            modifier = Modifier.offset(offset.x.dp / 8, offset.y.dp / 8),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Surface(
+                modifier = Modifier.size(100.dp),
+                color = Color(0xFF00FF85).copy(alpha = if (blurAmount > 0.dp) 0.5f else 1f),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                if (blurAmount > 0.dp) {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.2f)))
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                if (oscillate) "~~~ OSCILLATING ~~~" else "LUMINA MOTION", 
+                color = if (motionBlur) Color.White.copy(alpha = 0.5f) else Color.White, 
+                fontWeight = FontWeight.Bold, 
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+    }
+}
+
+@Composable
 fun LuminaTheme(content: @Composable () -> Unit) {
     val darkColorScheme = darkColorScheme(
         primary = Color(0xFFD0BCFF),
@@ -293,6 +339,7 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
     var currentTime by remember { mutableLongStateOf(0L) }
     var showAddMenu by remember { mutableStateOf(false) }
     var showEffectBrowser by remember { mutableStateOf(false) }
+    var activeEffects by remember { mutableStateOf(setOf<String>()) }
     val context = LocalContext.current
     
     Box(modifier = Modifier.fillMaxSize()) {
@@ -332,7 +379,7 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                PreviewArea()
+                PreviewArea(activeEffects)
             }
 
             // Playback Controls
@@ -419,7 +466,10 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
 
         // Effect Browser
         if (showEffectBrowser) {
-            EffectBrowserOverlay(onDismiss = { showEffectBrowser = false; selectedTab = 0 })
+            EffectBrowserOverlay(
+                onDismiss = { showEffectBrowser = false; selectedTab = 0 },
+                onEffectAdded = { activeEffects = activeEffects + it }
+            )
         }
     }
 }
@@ -504,7 +554,7 @@ fun AddMenuItem(icon: ImageVector, label: String, color: Color, onClick: () -> U
 }
 
 @Composable
-fun EffectBrowserOverlay(onDismiss: () -> Unit) {
+fun EffectBrowserOverlay(onDismiss: () -> Unit, onEffectAdded: (String) -> Unit) {
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     
     Surface(
@@ -519,7 +569,9 @@ fun EffectBrowserOverlay(onDismiss: () -> Unit) {
                 Text(if (selectedCategory == null) "ADD EFFECT" else selectedCategory!!, fontWeight = FontWeight.Black, color = Color.White, letterSpacing = 2.sp)
             }
             
+            val localContext = LocalContext.current
             if (selectedCategory == null) {
+                // ... (categories list)
                 val categories = listOf(
                     "Color & Light" to Color(0xFF4CAF50),
                     "Blur" to Color(0xFF2196F3),
@@ -572,7 +624,8 @@ fun EffectBrowserOverlay(onDismiss: () -> Unit) {
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color.White.copy(alpha = 0.05f))
                                 .clickable { 
-                                    Toast.makeText(LocalContext.current, "Added $effect", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(localContext, "Added $effect", Toast.LENGTH_SHORT).show()
+                                    onEffectAdded(effect)
                                     onDismiss() 
                                 }
                                 .padding(12.dp),
