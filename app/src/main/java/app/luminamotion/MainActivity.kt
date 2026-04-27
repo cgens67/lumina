@@ -532,6 +532,42 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
                         )
                     }
                 }
+
+                // Property Tray (Only visible when a layer is selected)
+                AnimatedVisibility(
+                    visible = selectedLayerId != null,
+                    enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                ) {
+                    val currentLayer = layers.find { it.id == selectedLayerId }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFF242426))
+                            .padding(8.dp)
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier.height(140.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            item { PropertyButton(Icons.Default.Palette, "Color & Fill") }
+                            item { PropertyButton(Icons.Default.FilterFrames, "Border & Shadow") }
+                            item { PropertyButton(Icons.Default.Opacity, "Blending") }
+                            item { PropertyButton(Icons.Default.Transform, "Move & Transform") }
+                            item { 
+                                PropertyButton(
+                                    Icons.Default.AutoAwesome, 
+                                    "Effects", 
+                                    Color(0xFF00FF85),
+                                    onClick = { showEffectBrowser = true }
+                                ) 
+                            }
+                            item { PropertyButton(Icons.Default.Edit, "Edit ${currentLayer?.type ?: "Layer"}") }
+                        }
+                    }
+                }
             }
         }
 
@@ -539,10 +575,6 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             BottomNavBar(selectedTab) { 
                 selectedTab = it 
-                if (it == 1) {
-                    if (selectedLayerId != null) showEffectBrowser = true
-                    else Toast.makeText(context, "Select a layer first", Toast.LENGTH_SHORT).show()
-                }
             }
         }
 
@@ -714,27 +746,36 @@ fun EffectBrowserOverlay(onDismiss: () -> Unit, onEffectAdded: (String) -> Unit)
                     "Procedural" to Color(0xFFFF9800),
                     "3D" to Color(0xFF9C27B0),
                     "Move/Transform" to Color(0xFFE91E63),
-                    "Text" to Color(0xFFFFD600)
+                    "Text" to Color(0xFFFFD600),
+                    "Correction" to Color(0xFF607D8B),
+                    "Opacity" to Color(0xFF795548)
                 )
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(categories) { item ->
                         val (name, color) = item
                         Box(
                             modifier = Modifier
-                                .height(100.dp)
+                                .height(80.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(color.copy(alpha = 0.1f))
-                                .border(1.dp, color.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                                .background(color.copy(alpha = 0.08f))
+                                .border(1.dp, color.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
                                 .clickable { selectedCategory = name },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(name, color = Color.White, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
+                            Text(
+                                name, 
+                                color = Color.White, 
+                                fontWeight = FontWeight.Bold, 
+                                style = MaterialTheme.typography.labelSmall,
+                                textAlign = TextAlign.Center, 
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }
@@ -834,5 +875,27 @@ fun BottomNavBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             selected = selectedTab == 2,
             onClick = { onTabSelected(2) }
         )
+    }
+}
+
+@Composable
+fun PropertyButton(icon: ImageVector, label: String, tint: Color = Color.White, onClick: () -> Unit = {}) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .clickable { onClick() },
+        color = Color.White.copy(alpha = 0.05f),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Icon(icon, null, tint = tint, modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1)
+        }
     }
 }
