@@ -71,10 +71,10 @@ app.get("/", (req, res) => {
             <section class="bg-red-500/5 rounded-[32px] p-8 border border-red-500/20">
                 <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-300 mb-4">Troubleshooting</h3>
                 <ul class="text-xs space-y-2 text-red-200/80 list-disc pl-4">
-                    <li><b>Repo Resolution:</b> Switched to PREFER_SETTINGS to allow builds in environments with pre-defined project repositories.</li>
-                    <li><b>Gradle Version:</b> Downgraded plugin to 8.1.4 and Kotlin to 1.8.10 for stable headless builds.</li>
-                    <li><b>AndroidX Error:</b> Enabled 'android.useAndroidX=true' in 'gradle.properties' to support modern libraries.</li>
-                    <li><b>CI Pipeline:</b> GitHub Actions now runs 'gradle wrapper' dynamically to ensure local binary compatibility.</li>
+                    <li><b>Mutation Error:</b> Fixed by pinning Gradle 8.5 and AGP 8.3.2 to prevent dependency resolution race conditions.</li>
+                    <li><b>AndroidX Error:</b> Explicitly enabled 'android.useAndroidX=true' and 'android.enableJetifier=true' in 'gradle.properties'.</li>
+                    <li><b>Repo Resolution:</b> Reverted to FAIL_ON_PROJECT_REPOS as we've centralized repos in settings.gradle.</li>
+                    <li><b>JDK 21:</b> Now using Zulu JDK 21 for better compatibility with modern Gradle 8.x.</li>
                 </ul>
             </section>
             
