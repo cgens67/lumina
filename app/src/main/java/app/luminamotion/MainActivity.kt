@@ -4,34 +4,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.text.style.TextAlign
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.animation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.zIndex
+import androidx.compose.animation.*
+import androidx.compose.foundation.Canvas
+import android.widget.Toast
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,27 +88,24 @@ fun AppNavigation() {
 
 @Composable
 fun TutorialMainScreen(onNewProject: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF1C1B1F))) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+            modifier = Modifier.fillMaxSize().padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header Image/Logo Placeholder
+            // Header Image/Logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp)),
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color.White.copy(alpha = 0.05f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Default.AutoAwesome,
-                    contentDescription = null,
-                    modifier = Modifier.size(80.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Default.MotionPhotosAuto, null, modifier = Modifier.size(80.dp), tint = Color(0xFF00FF85))
+                    Text("LUMINA MOTION", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Black, color = Color.White)
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -116,8 +113,8 @@ fun TutorialMainScreen(onNewProject: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.03f), RoundedCornerShape(24.dp))
-                    .padding(24.dp)
+                    .background(Color.White.copy(alpha = 0.03f), RoundedCornerShape(28.dp))
+                    .padding(28.dp)
             ) {
                 Text(
                     "\"Where do I start?\"",
@@ -126,56 +123,56 @@ fun TutorialMainScreen(onNewProject: () -> Unit) {
                     color = Color.White
                 )
                 Text(
-                    "Posted 25 April 2026",
+                    "Tutorial Project • 1.9MB",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "New to Lumina? We've got you covered.\nStart with this project.\n\nIt's simple. It walks you through all the basics. And soon you'll realize just how amazing motion design is!",
+                    "This tutorial walks you through everything. From adding layers to applying advanced keyframe animations and effects. You'll be a pro in no time!",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.7f),
                     lineHeight = 22.sp
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 
-                OutlinedButton(
-                    onClick = { /* Tutorial Link */ },
+                Button(
+                    onClick = { /* Tutorial */ },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(28.dp),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f))
                 ) {
-                    Text("WATCH THE TUTORIAL", color = Color.White)
+                    Text("WATCH TUTORIAL", color = Color.White, fontWeight = FontWeight.Bold)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                OutlinedButton(
-                    onClick = { /* Download Link */ },
+                Button(
+                    onClick = { /* Download */ },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(28.dp),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f))
                 ) {
-                    Text("DOWNLOAD THE PROJECT", color = Color.White)
+                    Text("DOWNLOAD PROJECT", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
         }
 
-        // Floating Plus Button for New Project
+        // Floating Action Button
         LargeFloatingActionButton(
             onClick = onNewProject,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 32.dp),
-            containerColor = Color(0xFF00D1FF),
+            containerColor = Color(0xFF00FF85),
             shape = CircleShape
         ) {
-            Icon(Icons.Default.Add, contentDescription = "New Project", tint = Color.Black)
+            Icon(Icons.Default.Add, contentDescription = "New Project", tint = Color.Black, modifier = Modifier.size(32.dp))
         }
     }
 }
 
 @Composable
 fun ProjectSetupScreen(onBack: () -> Unit, onCreate: (ProjectConfig) -> Unit) {
-    var name by remember { mutableStateOf("New Project 1") }
+    var name by remember { mutableStateOf("Untitled Project") }
     var selectedRatio by remember { mutableFloatStateOf(1f) }
     var selectedRes by remember { mutableStateOf("1080p (FHD)") }
     var selectedFPS by remember { mutableIntStateOf(30) }
@@ -183,8 +180,8 @@ fun ProjectSetupScreen(onBack: () -> Unit, onCreate: (ProjectConfig) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
             .background(Color(0xFF1C1B1F))
+            .padding(24.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -192,22 +189,24 @@ fun ProjectSetupScreen(onBack: () -> Unit, onCreate: (ProjectConfig) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBack) {
-                Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                Icon(Icons.Default.Close, null, tint = Color.White)
             }
-            Text("PROJECT", fontWeight = FontWeight.Bold, color = Color.White)
-            Text("ELEMENT", fontWeight = FontWeight.Bold, color = Color.Gray)
+            Row {
+                Text("PROJECT", fontWeight = FontWeight.Black, color = Color(0xFF00D1FF), style = MaterialTheme.typography.labelLarge)
+                Spacer(modifier = Modifier.width(24.dp))
+                Text("ELEMENT", fontWeight = FontWeight.Black, color = Color.Gray, style = MaterialTheme.typography.labelLarge)
+            }
             Spacer(modifier = Modifier.width(48.dp))
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Name Input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             modifier = Modifier.fillMaxWidth(),
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
-            trailingIcon = { Icon(Icons.Default.Edit, contentDescription = null, tint = Color.Gray) },
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White, fontWeight = FontWeight.Bold),
+            trailingIcon = { Icon(Icons.Default.Create, null, tint = Color.Gray) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.White.copy(alpha = 0.2f),
                 unfocusedBorderColor = Color.White.copy(alpha = 0.1f)
@@ -216,42 +215,43 @@ fun ProjectSetupScreen(onBack: () -> Unit, onCreate: (ProjectConfig) -> Unit) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Ratio Selection
+        // Ratio Selection Grid
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val ratios = listOf(16/9f to "16:9", 9/16f to "9:16", 4/5f to "4:5", 1f to "1:1", 4/3f to "4:3")
             ratios.forEach { (valRatio, label) ->
+                val isSelected = selectedRatio == valRatio
                 Box(
                     modifier = Modifier
                         .size(56.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(if (selectedRatio == valRatio) Color(0xFF00D1FF) else Color.White.copy(alpha = 0.05f))
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (isSelected) Color(0xFF00D1FF) else Color.White.copy(alpha = 0.05f))
                         .clickable { selectedRatio = valRatio },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(label, color = if (selectedRatio == valRatio) Color.Black else Color.White, style = MaterialTheme.typography.labelSmall)
+                    Text(label, color = if (isSelected) Color.Black else Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
-        // Resolution & FPS Dropdowns (Simplified for UI Demo)
         PropertyDropdown("Resolution", selectedRes)
-        PropertyDropdown("Frame Rate", "${selectedFPS} fps")
+        PropertyDropdown("Frame Rate", "$selectedFPS fps")
         PropertyDropdown("Background", "Light Grey")
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = { onCreate(ProjectConfig(name, selectedRatio, selectedRes, selectedFPS)) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f)),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.05f)),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
         ) {
-            Text("CREATE PROJECT", fontWeight = FontWeight.Bold, color = Color.White)
+            Text("CREATE PROJECT", fontWeight = FontWeight.Black, color = Color.White, letterSpacing = 2.sp)
         }
     }
 }
@@ -281,6 +281,19 @@ fun PreviewArea(activeEffects: Set<String> = emptySet()) {
     val motionBlur = activeEffects.contains("Motion Blur")
     val oscillate = activeEffects.contains("Oscillate")
 
+    val infiniteTransition = rememberInfiniteTransition(label = "oscillate")
+    val oscillateY by infiniteTransition.animateFloat(
+        initialValue = -20f,
+        targetValue = 20f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "y"
+    )
+    
+    val currentOscillateOffset = if (oscillate) oscillateY else 0f
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -296,24 +309,41 @@ fun PreviewArea(activeEffects: Set<String> = emptySet()) {
     ) {
         // Mock canvas object
         Column(
-            modifier = Modifier.offset(offset.x.dp / 8, offset.y.dp / 8),
+            modifier = Modifier.offset(
+                x = (offset.x.dp / 8),
+                y = (offset.y.dp / 8) + currentOscillateOffset.dp
+            ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Surface(
-                modifier = Modifier.size(100.dp),
-                color = Color(0xFF00FF85).copy(alpha = if (blurAmount > 0.dp) 0.5f else 1f),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                if (blurAmount > 0.dp) {
-                    Box(modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.2f)))
+            Box(contentAlignment = Alignment.Center) {
+                // Secondary shadow for Motion Blur mock
+                if (motionBlur) {
+                    Surface(
+                        modifier = Modifier.size(100.dp).offset(x = 10.dp),
+                        color = Color(0xFF00FF85).copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {}
+                }
+                
+                Surface(
+                    modifier = Modifier.size(100.dp),
+                    color = Color(0xFF00FF85).copy(alpha = if (blurAmount > 0.dp) 0.6f else 1f),
+                    shape = RoundedCornerShape(12.dp),
+                    border = if (blurAmount > 0.dp) BorderStroke(blurAmount / 2, Color.White.copy(alpha = 0.3f)) else null
+                ) {
+                    if (blurAmount > 0.dp) {
+                        Box(modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.1f)))
+                    }
                 }
             }
+            
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 if (oscillate) "~~~ OSCILLATING ~~~" else "LUMINA MOTION", 
-                color = if (motionBlur) Color.White.copy(alpha = 0.5f) else Color.White, 
-                fontWeight = FontWeight.Bold, 
-                style = MaterialTheme.typography.labelSmall
+                color = if (motionBlur) Color.White.copy(alpha = 0.4f) else Color.White, 
+                fontWeight = FontWeight.Black, 
+                style = MaterialTheme.typography.labelSmall,
+                letterSpacing = 2.sp
             )
         }
     }
@@ -332,6 +362,18 @@ fun LuminaTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = darkColorScheme, content = content)
 }
 
+data class Layer(
+    val id: String,
+    val name: String,
+    val type: LayerType,
+    val color: Color,
+    val effects: Set<String> = emptySet()
+)
+
+enum class LayerType {
+    Shape, Media, Text, Audio
+}
+
 @Composable
 fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -339,7 +381,13 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
     var currentTime by remember { mutableLongStateOf(0L) }
     var showAddMenu by remember { mutableStateOf(false) }
     var showEffectBrowser by remember { mutableStateOf(false) }
-    var activeEffects by remember { mutableStateOf(setOf<String>()) }
+    var selectedLayerId by remember { mutableStateOf<String?>(null) }
+    
+    var layers by remember { mutableStateOf(listOf(
+        Layer("1", "Background", LayerType.Shape, Color(0xFF444444)),
+        Layer("2", "Tutorial Text", LayerType.Text, Color(0xFFD0BCFF))
+    )) }
+
     val context = LocalContext.current
     
     Box(modifier = Modifier.fillMaxSize()) {
@@ -361,13 +409,20 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
                     IconButton(onClick = onExit) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
-                    Text(config.name, style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Text(config.name, style = MaterialTheme.typography.titleMedium, color = Color.White, fontWeight = FontWeight.Bold)
                 }
-                TextButton(
-                    onClick = { Toast.makeText(context, "Exporting...", Toast.LENGTH_SHORT).show() },
-                    colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFD0BCFF))
-                ) {
-                    Text("EXPORT", fontWeight = FontWeight.Black)
+                Row {
+                    IconButton(onClick = { Toast.makeText(context, "Project Settings", Toast.LENGTH_SHORT).show() }) {
+                        Icon(Icons.Default.Settings, null, tint = Color.LightGray)
+                    }
+                    TextButton(
+                        onClick = { Toast.makeText(context, "Exporting 1080p MP4...", Toast.LENGTH_SHORT).show() },
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF00D1FF))
+                    ) {
+                        Icon(Icons.Default.FileUpload, null, modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("EXPORT", fontWeight = FontWeight.Black)
+                    }
                 }
             }
 
@@ -379,128 +434,183 @@ fun MainEditorScreen(config: ProjectConfig, onExit: () -> Unit) {
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
+                // Determine active effects from selected layer
+                val activeEffects = layers.find { it.id == selectedLayerId }?.effects ?: emptySet()
                 PreviewArea(activeEffects)
             }
 
-            // Playback Controls
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { /* Undo */ }) { Icon(Icons.Default.Undo, null, tint = Color.LightGray) }
-                IconButton(onClick = { /* Redo */ }) { Icon(Icons.Default.Redo, null, tint = Color.LightGray) }
-                Spacer(modifier = Modifier.width(16.dp))
-                IconButton(onClick = { currentTime = 0 }) { Icon(Icons.Default.SkipPrevious, null, tint = Color.White) }
-                FilledIconButton(
-                    onClick = { isPlaying = !isPlaying },
-                    modifier = Modifier.size(56.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color.White)
-                ) {
-                    Icon(if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow, null, tint = Color.Black)
-                }
-                IconButton(onClick = { /* Skip to end */ }) { Icon(Icons.Default.SkipNext, null, tint = Color.White) }
-                Spacer(modifier = Modifier.width(16.dp))
-                IconButton(onClick = { /* Fullscreen */ }) { Icon(Icons.Default.Fullscreen, null, tint = Color.LightGray) }
-            }
-
-            // Time Display
-            Text(
-                "00:00:00", 
-                modifier = Modifier.fillMaxWidth(), 
-                textAlign = TextAlign.Center, 
-                color = Color.Gray, 
-                style = MaterialTheme.typography.labelSmall
-            )
-
-            // Timeline / Layer Area
+            // Playback and Editing Controls
             Column(
                 modifier = Modifier
-                    .height(280.dp)
                     .fillMaxWidth()
                     .background(Color(0xFF121212))
             ) {
-                // Timeline Header
+                // Secondary Controls Row
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.Visibility, null, tint = Color.Gray, modifier = Modifier.size(16.dp))
-                    Box(modifier = Modifier.width(2.dp).height(20.dp).background(Color.White))
+                    Row {
+                        IconButton(onClick = { /* Undo */ }) { Icon(Icons.Default.Undo, null, tint = Color.LightGray, modifier = Modifier.size(20.dp)) }
+                        IconButton(onClick = { /* Redo */ }) { Icon(Icons.Default.Redo, null, tint = Color.LightGray, modifier = Modifier.size(20.dp)) }
+                    }
+                    Text("0:00:00.0", color = Color.White, style = MaterialTheme.typography.labelMedium)
+                    Row {
+                        IconButton(onClick = { /* Grid */ }) { Icon(Icons.Default.Grid4x4, null, tint = Color.LightGray, modifier = Modifier.size(20.dp)) }
+                        IconButton(onClick = { /* Zoom */ }) { Icon(Icons.Default.ZoomIn, null, tint = Color.LightGray, modifier = Modifier.size(20.dp)) }
+                    }
                 }
-                
-                // Layers
-                Column(modifier = Modifier.weight(1f)) {
-                    LayerRow("Overlay_01", Color(0xFF2E2D6D))
-                    LayerRow("Text_Main", Color(0xFF5E5478))
-                    LayerRow("Background", Color(0xFF444444))
-                }
-            }
 
-            // Bottom Nav
-            BottomNavBar(selectedTab) { 
-                selectedTab = it 
-                if (it == 1) showEffectBrowser = true
+                // Playback controls
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { currentTime = 0 }) { Icon(Icons.Default.SkipPrevious, null, tint = Color.White) }
+                    IconButton(onClick = { /* Step Back */ }) { Icon(Icons.Default.ChevronLeft, null, tint = Color.White) }
+                    
+                    Surface(
+                        onClick = { isPlaying = !isPlaying },
+                        modifier = Modifier.size(48.dp),
+                        shape = CircleShape,
+                        color = Color.White
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow, null, tint = Color.Black)
+                        }
+                    }
+                    
+                    IconButton(onClick = { /* Step Forward */ }) { Icon(Icons.Default.ChevronRight, null, tint = Color.White) }
+                    IconButton(onClick = { /* Skip End */ }) { Icon(Icons.Default.SkipNext, null, tint = Color.White) }
+                }
+
+                // Timeline Layers
+                Column(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()
+                        .padding(bottom = 56.dp) // Space for bottom nav
+                ) {
+                    layers.reversed().forEach { layer ->
+                        LayerRow(
+                            layer = layer,
+                            isSelected = selectedLayerId == layer.id,
+                            onClick = { selectedLayerId = layer.id }
+                        )
+                    }
+                }
             }
         }
 
-        // Add Button (+)
+        // Bottom Navigation Overlay
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            BottomNavBar(selectedTab) { 
+                selectedTab = it 
+                if (it == 1) {
+                    if (selectedLayerId != null) showEffectBrowser = true
+                    else Toast.makeText(context, "Select a layer first", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // Floating Add Button
         LargeFloatingActionButton(
             onClick = { showAddMenu = true },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 72.dp),
+                .padding(bottom = 80.dp),
             containerColor = Color(0xFF00FF85),
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 12.dp),
             shape = CircleShape
         ) {
             Icon(Icons.Default.Add, null, tint = Color.Black)
         }
 
-        // Add Menu Overlay
+        // Add Menu
         if (showAddMenu) {
-            AddMenuOverlay(onDismiss = { showAddMenu = false })
+            AddMenuOverlay(
+                onDismiss = { showAddMenu = false },
+                onAdd = { type, name, color ->
+                    layers = layers + Layer(layers.size.toString(), name, type, color)
+                    showAddMenu = false
+                }
+            )
         }
 
         // Effect Browser
         if (showEffectBrowser) {
             EffectBrowserOverlay(
                 onDismiss = { showEffectBrowser = false; selectedTab = 0 },
-                onEffectAdded = { activeEffects = activeEffects + it }
+                onEffectAdded = { effectName ->
+                    layers = layers.map { 
+                        if (it.id == selectedLayerId) it.copy(effects = it.effects + effectName) else it
+                    }
+                }
             )
         }
     }
 }
 
 @Composable
-fun LayerRow(name: String, color: Color) {
+fun LayerRow(layer: Layer, isSelected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 16.dp),
+            .height(44.dp)
+            .background(if (isSelected) Color.White.copy(alpha = 0.1f) else Color.Transparent)
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(name, color = Color.Gray, style = MaterialTheme.typography.labelSmall, modifier = Modifier.width(80.dp))
+        Icon(
+            when(layer.type) {
+                LayerType.Shape -> Icons.Default.Category
+                LayerType.Media -> Icons.Default.Image
+                LayerType.Text -> Icons.Default.Title
+                LayerType.Audio -> Icons.Default.MusicNote
+            },
+            null,
+            tint = if (isSelected) Color.White else Color.Gray,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            layer.name,
+            color = if (isSelected) Color.White else Color.Gray,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.width(100.dp)
+        )
         Box(
             modifier = Modifier
                 .weight(1f)
-                .height(24.dp)
-                .background(color.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                .height(28.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(layer.color.copy(alpha = 0.3f))
         ) {
-            Box(modifier = Modifier.size(8.dp).align(Alignment.CenterStart).padding(start = 4.dp).background(color))
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(4.dp)
+                    .background(layer.color)
+            )
+        }
+        if (layer.effects.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(Icons.Default.AutoAwesome, null, tint = Color(0xFF00FF85), modifier = Modifier.size(12.dp))
         }
     }
 }
 
 @Composable
-fun AddMenuOverlay(onDismiss: () -> Unit) {
+fun AddMenuOverlay(onDismiss: () -> Unit, onAdd: (LayerType, String, Color) -> Unit) {
     val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.8f))
+            .background(Color.Black.copy(alpha = 0.7f))
             .clickable { onDismiss() }
             .zIndex(100f),
         contentAlignment = Alignment.BottomCenter
@@ -508,31 +618,27 @@ fun AddMenuOverlay(onDismiss: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF242426), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                .background(Color(0xFF242426), RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .padding(24.dp)
                 .clickable(enabled = false) {}
         ) {
-            Text("Add Content", fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Add Layer", fontWeight = FontWeight.Black, color = Color.White, style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(24.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                AddMenuItem(Icons.Default.ShapeLine, "Shape", Color(0xFF00FF85)) {
-                    Toast.makeText(context, "Shape tool active", Toast.LENGTH_SHORT).show()
-                    onDismiss()
+                AddMenuItem(Icons.Default.Category, "Shape", Color(0xFF00FF85)) {
+                    onAdd(LayerType.Shape, "Rectangle 1", Color(0xFF00FF85))
                 }
                 AddMenuItem(Icons.Default.Image, "Media", Color(0xFF00D1FF)) {
-                    Toast.makeText(context, "Select from Gallery or Camera", Toast.LENGTH_SHORT).show()
-                    onDismiss()
+                    onAdd(LayerType.Media, "Video 01", Color(0xFF00D1FF))
                 }
                 AddMenuItem(Icons.Default.Audiotrack, "Audio", Color(0xFFD0BCFF)) {
-                    Toast.makeText(context, "Import music or recording", Toast.LENGTH_SHORT).show()
-                    onDismiss()
+                    onAdd(LayerType.Audio, "Audio Track", Color(0xFFD0BCFF))
                 }
-                AddMenuItem(Icons.Default.TextFormat, "Text", Color(0xFFFFD600)) {
-                    Toast.makeText(context, "Text layer added", Toast.LENGTH_SHORT).show()
-                    onDismiss()
+                AddMenuItem(Icons.Default.Title, "Text", Color(0xFFFFD600)) {
+                    onAdd(LayerType.Text, "New Text", Color(0xFFFFD600))
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -571,7 +677,6 @@ fun EffectBrowserOverlay(onDismiss: () -> Unit, onEffectAdded: (String) -> Unit)
             
             val localContext = LocalContext.current
             if (selectedCategory == null) {
-                // ... (categories list)
                 val categories = listOf(
                     "Color & Light" to Color(0xFF4CAF50),
                     "Blur" to Color(0xFF2196F3),
@@ -589,7 +694,8 @@ fun EffectBrowserOverlay(onDismiss: () -> Unit, onEffectAdded: (String) -> Unit)
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(categories) { (name, color) ->
+                    items(categories) { item ->
+                        val (name, color) = item
                         Box(
                             modifier = Modifier
                                 .height(100.dp)
