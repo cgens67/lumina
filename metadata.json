@@ -1,0 +1,6 @@
+{
+  "name": "Lumina Motion (Android Build)",
+  "description": "Native Android motion graphics tool built with Jetpack Compose. Native source code in /app directory. Build APKs via GitHub Actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
