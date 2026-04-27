@@ -72,8 +72,8 @@ app.get("/", (req, res) => {
                 <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-300 mb-4">Troubleshooting</h3>
                 <ul class="text-xs space-y-2 text-red-200/80 list-disc pl-4">
                     <li><b>Mutation Error:</b> Fixed by pinning Gradle 8.5 and AGP 8.3.2 to prevent dependency resolution race conditions.</li>
+                    <li><b>Missing gradlew:</b> Restored 'gradle wrapper' step in CI to generate the bootstrapper on the fly.</li>
                     <li><b>AndroidX Error:</b> Explicitly enabled 'android.useAndroidX=true' and 'android.enableJetifier=true' in 'gradle.properties'.</li>
-                    <li><b>Repo Resolution:</b> Reverted to FAIL_ON_PROJECT_REPOS as we've centralized repos in settings.gradle.</li>
                     <li><b>JDK 21:</b> Now using Zulu JDK 21 for better compatibility with modern Gradle 8.x.</li>
                 </ul>
             </section>
