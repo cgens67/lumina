@@ -66,6 +66,16 @@ app.get("/", (req, res) => {
                     </div>
                 </div>
             </section>
+
+            <!-- Troubleshooting -->
+            <section class="bg-red-500/5 rounded-[32px] p-8 border border-red-500/20">
+                <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-300 mb-4">Troubleshooting</h3>
+                <ul class="text-xs space-y-2 text-red-200/80 list-disc pl-4">
+                    <li><b>Missing Wrapper:</b> The CI now generates 'gradlew' automatically via 'gradle wrapper'.</li>
+                    <li><b>Resource Errors:</b> Verified 'colors.xml' and Launcher Icons exist in /res.</li>
+                    <li><b>Java Version:</b> Build is locked to JDK 17 as required by modern Gradle.</li>
+                </ul>
+            </section>
             
             <footer class="text-center pt-12 border-t border-[#49454F]">
                 <p class="text-[10px] text-gray-500 font-mono">APP_VERSION: 1.0.0-ANDROID-STABLE</p>
