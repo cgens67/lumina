@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -20,7 +21,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.ui.text.style.TextAlign
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
@@ -66,40 +66,64 @@ fun AppNavigation() {
 
 @Composable
 fun WelcomeScreen(onGetStarted: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            Icons.Default.MotionPhotosAuto,
-            contentDescription = null,
-            modifier = Modifier.size(100.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            "Welcome to Lumina",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            "Professional motion design in your pocket.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Gray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(48.dp))
-        Button(
-            onClick = onGetStarted,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(12.dp)
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Decorative grid or pattern background would go here if we had custom drawing
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Get Started")
+            Spacer(modifier = Modifier.height(64.dp))
+            
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Surface(
+                    modifier = Modifier.size(120.dp),
+                    shape = RoundedCornerShape(32.dp),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                ) {
+                    Icon(
+                        Icons.Default.MotionPhotosAuto,
+                        contentDescription = null,
+                        modifier = Modifier.padding(24.dp).fillMaxSize(),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    "LUMINA",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    letterSpacing = 8.sp // Need sp import
+                )
+                Text(
+                    "MOTION MOTION",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 4.sp
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    "Professional motion design tools for creators.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(48.dp))
+                Button(
+                    onClick = onGetStarted,
+                    modifier = Modifier.fillMaxWidth().height(64.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                ) {
+                    Text("GET STARTED", fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+                }
+            }
         }
     }
 }
@@ -125,27 +149,31 @@ fun TermsOfServiceScreen(onAccept: () -> Unit, onBack: () -> Unit) {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(12.dp))
-                .padding(16.dp)
+                .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
+                .padding(20.dp)
         ) {
             Text(
-                "By using Lumina, you agree to:\n\n" +
-                "1. Respect project ownership.\n" +
-                "2. Not use for illegal content.\n" +
-                "3. Allow periodic updates for features.\n\n" +
-                "Lumina is currently in beta. Motion assets generated are stored locally unless synced.",
-                color = Color.LightGray,
-                style = MaterialTheme.typography.bodyMedium
+                "By using Lumina, you agree to the following terms:\n\n" +
+                "• All motion assets created are yours to keep.\n" +
+                "• Do not use Lumina to generate malicious or illegal content.\n" +
+                "• This is a beta version; features are subject to change.\n" +
+                "• Performance may vary across devices during rendering.\n\n" +
+                "Lumina uses advanced vertex and pixel shaders for real-time previewing. Long render times may occur for complex projects.",
+                color = Color.White.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.bodyMedium,
+                lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.5
             )
         }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = onAccept,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("I Accept & Continue")
+            Text("I Accept & Continue", fontWeight = FontWeight.Bold)
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -251,7 +279,7 @@ fun TopBar(onBack: () -> Unit, onExport: () -> Unit) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text("Lumina Project", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
