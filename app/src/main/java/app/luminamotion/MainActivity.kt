@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import android.widget.Toast
 
@@ -280,19 +282,31 @@ fun PreviewArea(activeEffects: Set<String> = emptySet()) {
     val blurAmount = if (activeEffects.contains("Gaussian Blur")) 10.dp else 0.dp
     val motionBlur = activeEffects.contains("Motion Blur")
     val oscillate = activeEffects.contains("Oscillate")
+    val pinch = activeEffects.contains("Pinch/Bulge")
 
     val infiniteTransition = rememberInfiniteTransition(label = "oscillate")
     val oscillateY by infiniteTransition.animateFloat(
-        initialValue = -20f,
-        targetValue = 20f,
+        initialValue = -15f,
+        targetValue = 15f,
         animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
+            animation = tween(1200, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "y"
     )
     
+    val oscillateRotation by infiniteTransition.animateFloat(
+        initialValue = -5f,
+        targetValue = 5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "rotation"
+    )
+    
     val currentOscillateOffset = if (oscillate) oscillateY else 0f
+    val currentRotation = if (oscillate) oscillateRotation else 0f
 
     Box(
         modifier = Modifier
@@ -309,10 +323,16 @@ fun PreviewArea(activeEffects: Set<String> = emptySet()) {
     ) {
         // Mock canvas object
         Column(
-            modifier = Modifier.offset(
-                x = (offset.x.dp / 8),
-                y = (offset.y.dp / 8) + currentOscillateOffset.dp
-            ),
+            modifier = Modifier
+                .offset(
+                    x = (offset.x.dp / 8),
+                    y = (offset.y.dp / 8) + currentOscillateOffset.dp
+                )
+                .graphicsLayer(
+                    rotationZ = currentRotation,
+                    scaleX = if (pinch) 1.2f else 1f,
+                    scaleY = if (pinch) 1.2f else 1f
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(contentAlignment = Alignment.Center) {
@@ -333,6 +353,15 @@ fun PreviewArea(activeEffects: Set<String> = emptySet()) {
                 ) {
                     if (blurAmount > 0.dp) {
                         Box(modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.1f)))
+                    }
+                    if (pinch) {
+                        // Tiny mock for bulge effect center
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.Center)
+                                .background(Color.White.copy(alpha = 0.4f), CircleShape)
+                        )
                     }
                 }
             }
